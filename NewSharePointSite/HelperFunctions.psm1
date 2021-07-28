@@ -43,3 +43,34 @@ function FindUnusedMailNickname {
     }
     return $mailNickname
 }
+
+function BadRequest {
+    param (
+        [parameter(Mandatory=$true)]$Body
+    )
+    try {
+        write-host "Sending BadRequest response: $Body"
+        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+            StatusCode = [HttpStatusCode]::BadRequest
+            Body = $($Body|ConvertTo-Json)
+        })
+    }
+    catch {
+        Write-Warning -Message $Body        
+    }
+}
+
+function GoodRequest {
+    param (
+        [parameter(Mandatory=$true)]$Body
+    )
+    try {
+        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+            StatusCode = [HttpStatusCode]::OK
+            Body = $($Body|ConvertTo-Json)
+        })
+    }
+    catch {
+        Write-Host $Body        
+    }
+}
