@@ -8,8 +8,8 @@ function DoesOwnerExist {
         $Owner
     )
     try {
-        $ownerprecheck = Invoke-WebRequest -Method Get -Headers $Headers -Uri "https://graph.microsoft.com/v1.0/users/$($Values.owner)"
-        return ($ownerprecheck.Content | ConvertFrom-Json).userprincipalname -eq $Values.owner
+        $ownerprecheck = Invoke-WebRequest -Method Get -Headers $Headers -Uri "https://graph.microsoft.com/v1.0/users/$($Owner)"
+        return ($ownerprecheck.Content | ConvertFrom-Json).userprincipalname -eq $Owner
     }
     catch {
         return $false    
