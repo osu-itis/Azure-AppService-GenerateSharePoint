@@ -45,38 +45,24 @@ $Values = [PSCustomObject]@{
 switch ($values) {
     #Bad Outcomes
     { [string]::IsNullOrEmpty($_.owner) } {
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-                StatusCode = [HttpStatusCode]::BadRequest
-                Body       = "Missing owner value"
-            })
+        BadRequest -Body "Missing owner value"
         continue
     }
     { [string]::IsNullOrEmpty($_.displayName) } {
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-                StatusCode = [HttpStatusCode]::BadRequest
-                Body       = "Missing displayName value"
-            })
+        BadRequest -Body "Missing displayName value"
         continue
     }
     { [string]::IsNullOrEmpty($_.description) } {
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-                StatusCode = [HttpStatusCode]::BadRequest
-                Body       = "Missing description value"
-            })
+        BadRequest -Body "Missing description value"
         continue
     }
     { [string]::IsNullOrEmpty($_.ticketID) } {
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-                StatusCode = [HttpStatusCode]::BadRequest
-                Body       = "Missing ticketID value"
-            })
+        BadRequest -Body "Missing ticketID value"
         continue
     }
     Default {
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-                StatusCode  = [HttpStatusCode]::BadRequest
-                Body        = "Request is in an invalid format"
-            })
+        BadRequest -Body "Request is in an invalid format"
+        continue
     }
     #Good Outcomes
     { ($_.owner -ne $null) -and ($_.displayName -ne $null) -and ($_.description -ne $null) -and ($_.ticketID -ne $null) } {
@@ -102,9 +88,18 @@ switch ($values) {
 # Creating the template to be used when creating the new sharepoint group
 switch ($Values) {
     # Bad outcomes
-    Default { "Could not determine the values status"; continue }
-    { $_.ownerExists -eq $false } { "Owner does not exist or could not be found"; continue }
-    { [string]::IsNullOrEmpty($_.mailNickname) } { "No mail nickname"; continue }
+    Default {
+        BadRequest -Body "Could not determine the values status"
+        continue
+    }
+    { $_.ownerExists -eq $false } {
+        BadRequest -Body "Owner does not exist or could not be found"
+        continue
+    }
+    { [string]::IsNullOrEmpty($_.mailNickname) } {
+        BadRequest -Body "No mail nickname"
+        continue
+    }
     # Good outcomes
     { $_.ownerExists -eq $true } {
         # Creating the template to be used for creating the new (sharepoint) group
@@ -125,8 +120,6 @@ switch ($Values) {
 
 # If the template exists, make the new sharepoint group
 switch ($values) {
-    # Bad Outcomes
-    Default { "Could not determine the values status"; continue }
     # Good Outcomes
     { $_.template -ne $null } {
         # Creating the sharepoint group and capturing the output
@@ -138,6 +131,7 @@ switch ($values) {
         # Getting the sharepoint site information
         $values.Sharepointdata = Invoke-RestMethod -Method get -Headers $Headers -Uri $('https://graph.microsoft.com/v1.0/sites?$search=' + '"' + $Values.displayName + '"') | Select-Object -ExpandProperty value | Where-Object { $_.name -eq $Values.mailNickname }
 
+        
     }
 }
 
