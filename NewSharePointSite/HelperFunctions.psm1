@@ -12,7 +12,7 @@ function DoesOwnerExist {
         return ($ownerprecheck.Content | ConvertFrom-Json).userprincipalname -eq $Owner
     }
     catch {
-        return $false    
+        return $false
     }
 }
 
@@ -25,7 +25,7 @@ function FindUnusedMailNickname {
         $displayName,
         $Headers
     )
-        
+
     $mailNickname = $( $displayName -replace '`~!@#$%^&*()-_=+?|/\;:,.<>', '' ).Replace(' ', '')
     # Note we are adding the consistency level parameter to the headers so we can complete the group search against mail nicknames ( https://docs.microsoft.com/en-us/graph/api/group-list?view=graph-rest-1.0 )
     # formatting the uri into the needed format: https://graph.microsoft.com/v1.0/groups?$search="mailNickname:<MAILNICKNAME>"
@@ -39,7 +39,7 @@ function FindUnusedMailNickname {
             $test = Invoke-RestMethod -Method get -Headers $($Headers + @{ConsistencyLevel = 'eventual' }) -Uri $('https://graph.microsoft.com/v1.0/groups?$search=' + '"' + 'mailNickname:' + $mailNickname + '"')
             $NicknameExists = $test.value.mailnickname -contains $mailNickname
             $X++
-        } until ($NicknameExists -eq $false)    
+        } until ($NicknameExists -eq $false)
     }
     return $mailNickname
 }
@@ -56,7 +56,7 @@ function BadRequest {
         })
     }
     catch {
-        Write-Warning -Message $Body        
+        Write-Warning -Message $Body
     }
 }
 
@@ -71,6 +71,6 @@ function GoodRequest {
         })
     }
     catch {
-        Write-Host $Body        
+        Write-Host $Body
     }
 }

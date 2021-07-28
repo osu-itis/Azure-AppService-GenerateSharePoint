@@ -126,7 +126,7 @@ switch ($values) {
         # Creating the sharepoint group and capturing the output
         $values.creationStatus = Invoke-WebRequest -Method Post -Headers $Headers -ContentType 'application/json' -Uri "https://graph.microsoft.com/v1.0/groups" -Body $($values.template | ConvertTo-Json)
 
-        while ($Values.Sharepointdata -eq $null) {
+        while ($null -eq $Values.Sharepointdata) {
             # Waiting for one minute for replication
             Start-sleep -Seconds 15
 
