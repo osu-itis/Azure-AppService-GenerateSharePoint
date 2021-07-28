@@ -125,13 +125,17 @@ switch ($values) {
         # Creating the sharepoint group and capturing the output
         $values.creationStatus = Invoke-WebRequest -Method Post -Headers $Headers -ContentType 'application/json' -Uri "https://graph.microsoft.com/v1.0/groups" -Body $($values.template | ConvertTo-Json)
 
-        # Waiting for one minute for replication
-        Start-sleep -Seconds 60
+        while ($Values.Sharepointdata -eq $null) {
+            # Waiting for one minute for replication
+            Start-sleep -Seconds 15
 
-        # Getting the sharepoint site information
-        $values.Sharepointdata = Invoke-RestMethod -Method get -Headers $Headers -Uri $('https://graph.microsoft.com/v1.0/sites?$search=' + '"' + $Values.displayName + '"') | Select-Object -ExpandProperty value | Where-Object { $_.name -eq $Values.mailNickname }
+            # Getting the sharepoint site information
+            $values.Sharepointdata = Invoke-RestMethod -Method get -Headers $Headers -Uri $('https://graph.microsoft.com/v1.0/sites?$search=' + '"' + $Values.displayName + '"') | Select-Object -ExpandProperty value | Where-Object { $_.name -eq $Values.mailNickname }
+        }
 
-        
+        Write-Host "New sharepoint url: $($Values.Sharepointdata.webUrl)"
+
+        GoodRequest -Body $Values.Sharepointdata
     }
 }
 
