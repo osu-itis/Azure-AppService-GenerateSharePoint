@@ -109,6 +109,7 @@ switch ($Values) {
             description          = $Values.description
             displayName          = $Values.displayName
             groupTypes           = @("Unified")
+            resourceBehaviorOptions = @("HideGroupInOutlook")
             mailEnabled          = $true
             mailNickname         = $Values.mailNickname
             securityEnabled      = $false
