@@ -65,6 +65,7 @@ function GoodRequest {
         [parameter(Mandatory=$true)]$Body
     )
     try {
+        write-host "Sending GoodRequest response"
         Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body = $($Body|ConvertTo-Json)
