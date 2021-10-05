@@ -106,16 +106,16 @@ switch ($Values) {
         # Creating the template to be used for creating the new (sharepoint) group
         # https://docs.microsoft.com/en-us/sharepoint/dev/solution-guidance/modern-experience-customizations-provisioning-sites
         $values.template = [PSCustomObject]@{
-            description          = $Values.description
-            displayName          = $Values.displayName
-            groupTypes           = @("Unified")
+            description             = $Values.description
+            displayName             = $Values.displayName
+            groupTypes              = @("Unified")
             resourceBehaviorOptions = @("HideGroupInOutlook")
-            mailEnabled          = $true
-            mailNickname         = $Values.mailNickname
-            securityEnabled      = $false
-            Visibility           = "private"
-            "owners@odata.bind"  = [array]@( $( [string]"https://graph.microsoft.com/v1.0/users/$($Values.owner)" ) )
-            "members@odata.bind" = [array]@( $( [string]"https://graph.microsoft.com/v1.0/users/$($Values.owner)" ) )
+            mailEnabled             = $true
+            mailNickname            = $Values.mailNickname
+            securityEnabled         = $false
+            Visibility              = "private"
+            "owners@odata.bind"     = [array]@( $( [string]"https://graph.microsoft.com/v1.0/users/$($Values.owner)" ) )
+            "members@odata.bind"    = [array]@( $( [string]"https://graph.microsoft.com/v1.0/users/$($Values.owner)" ) )
         }
     }
 }
@@ -130,14 +130,14 @@ switch ($values) {
         Write-Host "Creation status $($Values.creationstatus.StatusCode), $($Values.creationstatus.StatusDescription)"
 
         # Summary of the new sharepoint group
-        $values.Sharepointdata = $values.creationstatus.Content|ConvertFrom-Json|Select-Object ID,Displayname,Description,@{name="webUrl"; Expression={"https://oregonstateuniversity.sharepoint.com/sites/" + $_.MailNickName}},Mail,MailNickname,visibility,CreatedDateTime
+        $values.Sharepointdata = $values.creationstatus.Content | ConvertFrom-Json | Select-Object ID, Displayname, Description, @{name = "webUrl"; Expression = { "https://oregonstateuniversity.sharepoint.com/sites/" + $_.MailNickName } }, Mail, MailNickname, visibility, CreatedDateTime
         Write-Host "New sharepoint url: $($Values.Sharepointdata.webUrl)"
 
         # Responding with the good response, providing the summary of the sharepoint data
         GoodRequest -Body $Values.Sharepointdata
     }
     # Bad Outcomes
-    { $_.template -eq $null }{
+    { $_.template -eq $null } {
         BadRequest -Body "A sharepoint template could not be generated"
         Continue
     }

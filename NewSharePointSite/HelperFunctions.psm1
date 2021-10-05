@@ -16,11 +16,11 @@ function DoesOwnerExist {
     }
 }
 
-<#
-.SYNOPSIS
-Find an unused mail nickname
-#>
 function FindUnusedMailNickname {
+    <#
+    .SYNOPSIS
+    Find an unused mail nickname
+    #>
     param (
         $displayName,
         $Headers
