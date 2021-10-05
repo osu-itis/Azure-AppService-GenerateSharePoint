@@ -125,19 +125,21 @@ switch ($values) {
     # Good Outcomes
     { $_.template -ne $null } {
         # Creating the sharepoint group and capturing the output
+        Write-Host "Creating sharepoint group"
         $values.creationStatus = Invoke-WebRequest -Method Post -Headers $Headers -ContentType 'application/json' -Uri "https://graph.microsoft.com/v1.0/groups" -Body $($values.template | ConvertTo-Json)
+        Write-Host "Creation status $($Values.creationstatus.StatusCode), $($Values.creationstatus.StatusDescription)"
 
-        while ($null -eq $Values.Sharepointdata) {
-            # Waiting for one minute for replication
-            Start-sleep -Seconds 15
-
-            # Getting the sharepoint site information
-            $values.Sharepointdata = Invoke-RestMethod -Method get -Headers $Headers -Uri $('https://graph.microsoft.com/v1.0/sites?$search=' + '"' + $Values.displayName + '"') | Select-Object -ExpandProperty value | Where-Object { $_.name -eq $Values.mailNickname }
-        }
-
+        # Summary of the new sharepoint group
+        $values.Sharepointdata = $values.creationstatus.Content|ConvertFrom-Json|Select-Object ID,Displayname,Description,@{name="webUrl"; Expression={"https://oregonstateuniversity.sharepoint.com/sites/" + $_.MailNickName}},Mail,MailNickname,visibility,CreatedDateTime
         Write-Host "New sharepoint url: $($Values.Sharepointdata.webUrl)"
 
+        # Responding with the good response, providing the summary of the sharepoint data
         GoodRequest -Body $Values.Sharepointdata
+    }
+    # Bad Outcomes
+    { $_.template -eq $null }{
+        BadRequest -Body "A sharepoint template could not be generated"
+        Continue
     }
 }
 
