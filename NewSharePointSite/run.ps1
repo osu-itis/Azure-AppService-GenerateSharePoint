@@ -21,6 +21,11 @@ if ($TriggerMetadata.Headers.Host -like "localhost*") {
     AutoLoadENVs
 }
 
+# Checks for the needed ENVs before proceeding
+if ([string]::IsNullOrEmpty($env:ClientID)) { Throw 'Could not find $env:ClientID' }
+if ([string]::IsNullOrEmpty($env:ClientSecret)) { Throw 'Could not find $env:ClientSecret' }
+if ([string]::IsNullOrEmpty($env:TenantId)) { Throw 'Could not find $env:TenantId' }
+
 # Import the graph api token module
 Import-Module .\Modules\New-GraphAPIToken\New-GraphAPIToken.psm1
 
