@@ -16,13 +16,6 @@ if ($TriggerMetadata) {
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
-# If this is running on local host, load the expected ENVs
-if ($TriggerMetadata.Headers.Host -like "localhost*") {
-    # Load ENVs
-    . C:\Users\carrk\GitHub\CodeSnippet-Azure-AutoLoadENVs\AutoLoadENVs.ps1
-    AutoLoadENVs
-}
-
 # Import the graph api token module
 Import-Module .\Modules\New-GraphAPIToken\New-GraphAPIToken.psm1
 
@@ -35,9 +28,6 @@ CheckNeededENVs
 # Gathering a token and setting the headers
 $GraphAPIToken = New-GraphAPIToken -ClientID $env:ClientID -ClientSecret $env:ClientSecret -TenantID $env:TenantID
 $Headers = $GraphAPIToken.Headers
-
-# Importing the cached request
-$Request = Import-Clixml -Path .\NewSharePointSite\request.cli.xml
 
 # Creating the master 'values' variable that will contain all status information
 $Values = [PSCustomObject]@{
