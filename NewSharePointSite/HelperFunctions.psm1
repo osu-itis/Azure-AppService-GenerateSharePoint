@@ -1,3 +1,17 @@
+function CheckNeededENVs {
+    <#
+    .SYNOPSIS
+    Check that the needed ENVs are all avalable before proceeding
+    #>
+    param (
+        # No parameters
+        )
+        
+    if ([string]::IsNullOrEmpty($env:ClientID)) { Throw 'Could not find $env:ClientID' }
+    if ([string]::IsNullOrEmpty($env:ClientSecret)) { Throw 'Could not find $env:ClientSecret' }
+    if ([string]::IsNullOrEmpty($env:TenantId)) { Throw 'Could not find $env:TenantId' }
+}
+
 function DoesOwnerExist {
     <#
     .SYNOPSIS

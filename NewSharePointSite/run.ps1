@@ -21,16 +21,14 @@ if ($TriggerMetadata.Headers.Host -like "localhost*") {
     AutoLoadENVs
 }
 
-# Checks for the needed ENVs before proceeding
-if ([string]::IsNullOrEmpty($env:ClientID)) { Throw 'Could not find $env:ClientID' }
-if ([string]::IsNullOrEmpty($env:ClientSecret)) { Throw 'Could not find $env:ClientSecret' }
-if ([string]::IsNullOrEmpty($env:TenantId)) { Throw 'Could not find $env:TenantId' }
-
 # Import the graph api token module
 Import-Module .\Modules\New-GraphAPIToken\New-GraphAPIToken.psm1
 
 # Import the helper functions
 Import-Module .\NewSharePointSite\HelperFunctions.psm1
+
+# Check for the needed ENVs before proceeding
+CheckNeededENVs
 
 # Gathering a token and setting the headers
 $GraphAPIToken = New-GraphAPIToken -ClientID $env:ClientID -ClientSecret $env:ClientSecret -TenantID $env:TenantID
