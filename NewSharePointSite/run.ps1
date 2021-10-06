@@ -3,12 +3,14 @@ using namespace System.Net
 # Input bindings are passed in via param block.
 param($Request, $TriggerMetadata)
 
+# Writing the request to disk for troubleshooting/logging purposes
 if ($Request) {
-    $Request | Export-Clixml .\NewSharePointSite\request.cli.xml
+    $Request | Export-Clixml .\NewSharePointSite\LastRequest\Request.cli.xml -Force
 }
 
+# Writing the triggermetadata to disk for troubleshooting/logging purposes
 if ($TriggerMetadata) {
-    $TriggerMetadata | Export-Clixml .\NewSharePointSite\TriggerMetadata.cli.xml
+    $TriggerMetadata | Export-Clixml .\NewSharePointSite\LastRequest\TriggerMetadata.cli.xml -Force
 }
 
 # Write to the Azure Functions log stream.
@@ -153,5 +155,5 @@ switch ($values) {
     }
 }
 
-# Exporting the clixml with this run's values
-Export-Clixml -InputObject $Values -Path .\NewSharePointSite\values.cli.xml
+# Writing the values to disk for troubleshooting/logging purposes
+Export-Clixml -InputObject $Values -Path .\NewSharePointSite\LastRequest\Values.cli.xml -Force
