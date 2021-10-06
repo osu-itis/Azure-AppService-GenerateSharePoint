@@ -14,9 +14,12 @@ if ($TriggerMetadata) {
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
-# Load ENVs
-. C:\Users\carrk\GitHub\CodeSnippet-Azure-AutoLoadENVs\AutoLoadENVs.ps1
-AutoLoadENVs
+# If this is running on local host, load the expected ENVs
+if ($TriggerMetadata.Headers.Host -like "localhost*") {
+    # Load ENVs
+    . C:\Users\carrk\GitHub\CodeSnippet-Azure-AutoLoadENVs\AutoLoadENVs.ps1
+    AutoLoadENVs
+}
 
 # Import the graph api token module
 Import-Module .\Modules\New-GraphAPIToken\New-GraphAPIToken.psm1
