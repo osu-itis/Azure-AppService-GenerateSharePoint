@@ -12,6 +12,38 @@ function CheckNeededENVs {
     if ([string]::IsNullOrEmpty($env:TenantId)) { Throw 'Could not find $env:TenantId' }
 }
 
+Function ConvertFormat {
+    <#
+    .SYNOPSIS
+    Converts HTML encoding to standard formatting and removes any leading or trailing whitespace
+
+    .PARAMETER InputText
+    The input text to convert
+
+    .EXAMPLE
+    PS>$temp = "This+is+a+test%2fexample%0D%0A%0D%0AAnd+it+rocks"
+    PS>convertformat -InputText $temp
+
+    This is a test/example
+
+    And it rocks
+    "
+    #>
+    PARAM (
+        [parameter(Mandatory = $true)][string]$InputText
+    )
+
+    Add-Type -AssemblyName System.Web
+
+    $OutputText = [string]$(
+        [System.Web.HttpUtility]::UrlDecode(
+            $InputText
+        )
+    ).Trim()
+
+    Return $OutputText
+}
+
 function DoesOwnerExist {
     <#
     .SYNOPSIS
