@@ -7,6 +7,10 @@ if ($Request) {
     $Request | Export-Clixml .\NewSharePointSite\request.cli.xml
 }
 
+if ($TriggerMetadata) {
+    $TriggerMetadata | Export-Clixml .\NewSharePointSite\TriggerMetadata.cli.xml
+}
+
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
