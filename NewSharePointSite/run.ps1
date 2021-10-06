@@ -129,7 +129,7 @@ switch ($values) {
         # Creating the sharepoint group and capturing the output
         Write-Host "Creating sharepoint group"
         $values.creationStatus = Invoke-WebRequest -Method Post -Headers $Headers -ContentType 'application/json' -Uri "https://graph.microsoft.com/v1.0/groups" -Body $($values.template | ConvertTo-Json)
-        Write-Host "Creation status $($Values.creationstatus.StatusCode), $($Values.creationstatus.StatusDescription)"
+        Write-Host "Creation status: $($Values.creationstatus.StatusCode), $($Values.creationstatus.StatusDescription)"
 
         # Summary of the new sharepoint group
         $values.Sharepointdata = $values.creationstatus.Content | ConvertFrom-Json | Select-Object ID, Displayname, Description, @{name = "webUrl"; Expression = { "https://oregonstateuniversity.sharepoint.com/sites/" + $_.MailNickName } }, Mail, MailNickname, visibility, CreatedDateTime
