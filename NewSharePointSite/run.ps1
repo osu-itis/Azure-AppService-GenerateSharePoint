@@ -31,7 +31,8 @@ $Headers = $GraphAPIToken.Headers
 
 # Creating the master 'values' variable that will contain all status information
 $Values = [PSCustomObject]@{
-    owner          = $(ConvertFormat -InputText $Request.Body.owner )
+    # Cleaning up the format and then resolving the owner's UPN
+    owner          = $(ResolveOwner -Headers $Headers -Owner $( ConvertFormat -InputText $Request.Body.owner ) )
     displayName    = $(ConvertFormat -InputText $Request.Body.displayName )
     description    = $(ConvertFormat -InputText $Request.Body.description )
     ticketID       = $(ConvertFormat -InputText $Request.Body.ticketID )

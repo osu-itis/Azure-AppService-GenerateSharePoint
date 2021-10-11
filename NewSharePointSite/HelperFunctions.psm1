@@ -44,6 +44,32 @@ Function ConvertFormat {
     Return $OutputText
 }
 
+function ResolveOwner {
+    <#
+    .SYNOPSIS
+    Resolve the email address to the UserPrincipalName
+    #>
+    param (
+        [parameter(Mandatory = $true)][string]$Owner,
+        [parameter(Mandatory = $true)]$Headers
+    )
+
+    # This formatting is intentional, the $filter needs to be single quoted due to the dollarsign, the single quotes need to be double quoted and the variables should not be single quoted so they are evaluated properly
+    # Example of the output: https://graph.microsoft.com/v1.0/users/?$filter=mail eq 'email.address@oregonstate.edu' or userprincipalname eq 'email.address@oregonstate.edu'
+    $Uri = "https://graph.microsoft.com/v1.0/users/" + '?$filter=mail eq' + " '" + $($Owner) + "' " + 'or userprincipalname eq' + " '" + $($Owner) + "' "
+
+    try {
+        # Getting the resolved owner
+        $ResolvedOwner = Invoke-WebRequest -Method Get -Headers $Headers -Uri $Uri
+    }
+    catch {
+        Write-Error -Message "Failed to identity the Owner" -ErrorAction Stop
+    }
+
+    # Returning the resolved owner's UPN
+    Return ($ResolvedOwner.Content | ConvertFrom-Json).value.userprincipalname
+}
+
 function DoesOwnerExist {
     <#
     .SYNOPSIS
