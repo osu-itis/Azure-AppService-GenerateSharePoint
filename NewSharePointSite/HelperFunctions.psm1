@@ -5,8 +5,8 @@ function CheckNeededENVs {
     #>
     param (
         # No parameters
-        )
-        
+    )
+
     if ([string]::IsNullOrEmpty($env:ClientID)) { Throw 'Could not find $env:ClientID' }
     if ([string]::IsNullOrEmpty($env:ClientSecret)) { Throw 'Could not find $env:ClientSecret' }
     if ([string]::IsNullOrEmpty($env:TenantId)) { Throw 'Could not find $env:TenantId' }
@@ -118,14 +118,14 @@ function FindUnusedMailNickname {
 
 function BadRequest {
     param (
-        [parameter(Mandatory=$true)]$Body
+        [parameter(Mandatory = $true)]$Body
     )
     try {
         write-host "Sending BadRequest response: $Body"
         Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = [HttpStatusCode]::BadRequest
-            Body = $($Body|ConvertTo-Json)
-        })
+                StatusCode = [HttpStatusCode]::BadRequest
+                Body       = $($Body | ConvertTo-Json)
+            })
     }
     catch {
         Write-Warning -Message $Body
@@ -134,14 +134,14 @@ function BadRequest {
 
 function GoodRequest {
     param (
-        [parameter(Mandatory=$true)]$Body
+        [parameter(Mandatory = $true)]$Body
     )
     try {
         write-host "Sending GoodRequest response"
         Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = [HttpStatusCode]::OK
-            Body = $($Body|ConvertTo-Json)
-        })
+                StatusCode = [HttpStatusCode]::OK
+                Body       = $($Body | ConvertTo-Json)
+            })
     }
     catch {
         Write-Host $Body
